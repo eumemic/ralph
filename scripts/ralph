@@ -4,7 +4,6 @@
 # Usage:
 #   ralph plan [max_iterations]    # Run planning loop
 #   ralph build [max_iterations]   # Run building loop
-#   ralph init                     # Initialize Ralph in current project
 #   ralph --help                   # Show help
 
 set -euo pipefail
@@ -28,21 +27,23 @@ Ralph - Spec-to-Code Synchronization Engine
 Usage:
   ralph plan [max_iterations]    Run the planning loop (gap analysis)
   ralph build [max_iterations]   Run the building loop (implementation)
-  ralph init                     Initialize Ralph in the current project
   ralph --help                   Show this help
 
 Examples:
-  ralph init                     Set up specs/ and .ralph/ directories
   ralph plan                     Analyze specs and generate implementation plan
   ralph plan 5                   Run max 5 planning iterations
   ralph build                    Implement tasks from the plan
   ralph build 20                 Run max 20 build iterations
 
+Initialize a new project:
+  Use /ralph-init in Claude Code for interactive setup
+
 The Ralph Workflow:
-  1. Write specifications in specs/ (or configured location)
-  2. Run 'ralph plan' to generate .ralph/IMPLEMENTATION_PLAN.md
-  3. Run 'ralph build' to implement tasks one at a time
-  4. Repeat as specs evolve
+  1. Run /ralph-init to set up specs/ and .ralph/
+  2. Write specifications in specs/
+  3. Run 'ralph plan' to generate .ralph/IMPLEMENTATION_PLAN.md
+  4. Run 'ralph build' to implement tasks one at a time
+  5. Repeat as specs evolve
 
 Learn more: https://github.com/eumemic/ralph
 EOF
@@ -218,7 +219,12 @@ run_loop() {
 # Main command dispatch
 case "${1:-}" in
     init)
-        exec bash "$PLUGIN_ROOT/scripts/init.sh" "${@:2}"
+        echo "Error: 'ralph init' has been removed."
+        echo ""
+        echo "Use /ralph-init in Claude Code for interactive setup."
+        echo "This provides a better experience with project detection"
+        echo "and configuration of your test/lint/typecheck commands."
+        exit 1
         ;;
     plan)
         run_loop "plan" "${2:-0}"
