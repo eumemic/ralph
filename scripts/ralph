@@ -48,7 +48,7 @@ The Ralph Workflow:
   3. Run 'ralph build' to implement tasks one at a time
   4. Repeat as specs evolve
 
-Learn more: https://github.com/tmcw/ralph
+Learn more: https://github.com/eumemic/ralph
 EOF
 }
 
