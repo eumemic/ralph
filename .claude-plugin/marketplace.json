@@ -8,7 +8,7 @@
       "name": "ralph",
       "source": "./",
       "description": "Autonomous AI-assisted development methodology that keeps specs and code in sync through intelligent iteration loops",
-      "version": "1.0.4"
+      "version": "1.0.5"
     }
   ]
 }
