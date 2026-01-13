@@ -34,31 +34,6 @@ specs_dir: ./specs
 # subagent_model: sonnet
 EOF
 
-# Create spec template
-cat > specs/_TEMPLATE.md <<'EOF'
-# Feature: [Name]
-
-## Overview
-Brief description of what this feature does and why it exists.
-
-## Requirements
-
-### Functional Requirements
-- [ ] Requirement 1: Description
-- [ ] Requirement 2: Description
-
-### Non-Functional Requirements
-- [ ] Performance: [specific criteria]
-- [ ] Security: [specific criteria]
-
-## Acceptance Criteria
-- [ ] Criterion 1: How to verify this works
-- [ ] Criterion 2: How to verify this works
-
-## Notes
-Any additional context, constraints, or considerations.
-EOF
-
 # Create implementation plan placeholder
 cat > .ralph/IMPLEMENTATION_PLAN.md <<'EOF'
 # Implementation Plan
@@ -77,13 +52,11 @@ echo "✓ Ralph initialized!"
 echo ""
 echo "Created:"
 echo "  specs/                     Specification files go here"
-echo "  specs/_TEMPLATE.md         Example spec format"
 echo "  .ralph/config.yaml         Configuration"
 echo "  .ralph/IMPLEMENTATION_PLAN.md  Task list (generated)"
 echo ""
 echo "Next steps:"
 echo "  1. Write your first spec in specs/"
-echo "     (see specs/_TEMPLATE.md for the format)"
 echo ""
 echo "  2. Run the planning loop:"
 echo "     ralph plan"
