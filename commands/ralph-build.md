@@ -17,7 +17,7 @@ Explain what the building loop does and how to run it:
 2. **Picks ONE task** - Selects the highest priority incomplete task
 3. **Searches before building** - Confirms the feature isn't already implemented
 4. **Implements** - Writes the code for that one task
-5. **Tests and validates** - Runs tests, uses code-simplifier and code-review skills
+5. **Tests and validates** - Runs tests, reviews code for quality
 6. **Commits** - Creates a commit with the working implementation
 7. **Updates plan** - Marks the task complete in `IMPLEMENTATION_PLAN.md`
 
@@ -61,9 +61,8 @@ Or, for a more integrated experience, follow the building prompt directly:
 
 The building loop includes built-in quality checks:
 1. **Tests** - Must pass (or be added if missing)
-2. **code-simplifier skill** - Cleans up the implementation
-3. **code-review skill** - Checks for issues before commit
-4. **Pre-commit hooks** - Project-specific validation
+2. **Code review** - Implementation reviewed for simplicity and correctness
+3. **Pre-commit hooks** - Project-specific validation (if configured)
 
 ### Configuration
 

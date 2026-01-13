@@ -59,15 +59,9 @@ Create signals and gates to guide successful output. Steer from two directions:
 - LLM-as-judge can provide backpressure for subjective criteria
 - Binary pass/fail reviews that iterate until passing
 
-### Skills as Operational Knowledge
+### Operational Knowledge
 
-Instead of project-specific AGENTS.md files, operational knowledge lives in skills:
-
-- Project-specific skills for how to run tests, lint, typecheck
-- `git-workflow` patterns for commits, PRs
-- New skills created via `skill-development` when patterns emerge
-
-Skills are reusable across projects and maintained in one place.
+Document operational patterns (how to run tests, lint, typecheck, build gotchas) in project files like README.md or DEVELOPMENT.md. This keeps the knowledge accessible to future iterations.
 
 ## Let Ralph Ralph
 
@@ -116,7 +110,7 @@ To get the most from Ralph, get out of his way:
 Signs are anything Ralph can discover:
 
 - Prompt guardrails ("don't assume not implemented")
-- Operational knowledge in skills
+- Operational knowledge in project docs
 - Utilities and patterns in the codebase
 - Test fixtures that demonstrate correct behavior
 

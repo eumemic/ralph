@@ -181,21 +181,17 @@ Key elements:
 
 The agent tries to commit - if pre-commit hooks fail, the commit is rejected and the agent must fix issues.
 
-### Skills Before Commit
+### Review Before Commit
 
-Before attempting commit, use:
-1. `code-simplifier` - Clean up the implementation
-2. `code-review` - Check for issues
+Before attempting commit:
+1. Review the implementation for simplicity and correctness
+2. Check for bugs, edge cases, and issues
 
 This adds quality gates before the pre-commit hook.
 
-### Skills for Operational Knowledge
+### Operational Knowledge
 
-Instead of updating project-specific files, operational discoveries should:
-1. Update relevant existing skills
-2. Create new skills via `skill-development` if no existing skill fits
-
-This keeps operational knowledge in the reusable skill system.
+When operational discoveries are made (how to run tests, build gotchas), document them in project files like README.md or DEVELOPMENT.md for future reference.
 
 ## Task Completion
 

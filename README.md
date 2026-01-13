@@ -57,7 +57,7 @@ Create markdown files in `specs/` describing what you want to build. Focus on:
 - **Edge cases** - What could go wrong
 - **Constraints** - Performance, security, compatibility
 
-Use the `/ralph` skill in Claude Code to help write specs through a structured conversation.
+Claude Code (with the Ralph plugin) can help you write specs through a structured conversation - just ask it to help you write a spec.
 
 ### Run the planning loop
 
@@ -146,7 +146,7 @@ specs_dir: ./specs
 2. Picks highest priority incomplete task
 3. Searches codebase ("don't assume not implemented")
 4. Writes test first, then implements
-5. Runs validation (tests, code-review, code-simplifier)
+5. Runs validation (tests, code review)
 6. Commits on success
 7. Exits - loop restarts with fresh context
 

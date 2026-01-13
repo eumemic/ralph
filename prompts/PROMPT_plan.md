@@ -12,11 +12,11 @@
 
 Example work item format:
 ```
-- [ ] Update `IndexConfig.target_chunk_tokens` from `int` to `int | None`
-  - Spec: specs/client-managed-chunking.md § Activation
-  - Success: `IndexConfig(target_chunk_tokens=None, ...)` is valid; existing configs with int values still work
-  - Test: `test_config_accepts_none_target_chunk_tokens`, `test_config_backward_compatible`
-  - Location: ragzoom/config.py:277
+- [ ] Add email validation to user registration
+  - Spec: specs/user-auth.md § Registration
+  - Success: Invalid emails are rejected with clear error message; valid emails proceed to account creation
+  - Test: `test_registration_rejects_invalid_email`, `test_registration_accepts_valid_email`
+  - Location: src/auth/registration.py:45
 ```
 
 IMPORTANT: Plan only. Do NOT implement anything. Do NOT assume functionality is missing; confirm with code search first. Use the "don't assume not implemented" principle - always search before concluding something doesn't exist.

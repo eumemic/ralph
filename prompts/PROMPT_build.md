@@ -11,7 +11,7 @@
 
 4. When you discover issues, immediately update `${PLAN_FILE}` with your findings. When resolved, mark the item complete by changing `- [ ]` to `- [x]`.
 
-5. Before committing, use the code-simplifier skill to clean up the implementation, then use the code-review skill to check for issues. Address any issues raised.
+5. Before committing, review your implementation for simplicity and correctness. Clean up any unnecessary complexity, check for bugs or issues, and address any problems found.
 
 6. **YOU MUST COMMIT YOUR CHANGES.** Run `git add -A && git commit -m "descriptive message"`. The pre-commit hook will validate your work. If it fails, fix the issues and commit again. Your work is NOT done until the commit succeeds. Do not summarize or declare victory without a successful commit.
 
@@ -22,4 +22,4 @@
 999999999. Implement functionality completely. Placeholders and stubs waste efforts and time redoing the same work.
 9999999999. Keep completed items in `${PLAN_FILE}` as `- [x]` for history. Only delete items if they become irrelevant (e.g., superseded by spec changes).
 99999999999. If you find inconsistencies in `${SPECS_DIR}/*`, update the specs to resolve them.
-999999999999. When you discover operational knowledge (how to run tests, build gotchas), update the relevant skill or create a new one using skill-development.
+999999999999. When you discover operational knowledge (how to run tests, build gotchas), document it in a project README or DEVELOPMENT.md file.

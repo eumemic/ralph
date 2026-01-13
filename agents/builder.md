@@ -23,7 +23,7 @@ Given a single task from the implementation plan:
 3. **Write the test first** - Create or update the test that will verify the success criterion
 4. **Implement** - Write the minimal code to make the test pass
 5. **Validate** - Run the tests and ensure they pass
-6. **Clean up** - Use code-simplifier patterns to keep code clean
+6. **Clean up** - Review for simplicity and remove unnecessary complexity
 
 ## Critical Rules
 

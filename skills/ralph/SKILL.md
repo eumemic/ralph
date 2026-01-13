@@ -65,9 +65,9 @@ Each iteration gets a fresh context window. The bash loop is intentionally dumb 
 ### Backpressure
 
 Work is validated through:
-- Pre-commit hooks
+- Pre-commit hooks (if configured)
 - Tests encoding acceptance criteria
-- code-simplifier and code-review skills before commit
+- Code review before commit
 
 If validation fails, the agent fixes and retries. Bad work doesn't escape.
 
@@ -201,7 +201,7 @@ The plan is disposable. Regeneration costs one planning loop - cheap compared to
 
 ### Operational Knowledge
 
-When implementing agents discover operational patterns (how to run tests, gotchas about the build system), they should update relevant skills or create new ones using skill-development. This keeps operational knowledge in the skill system rather than project-specific files.
+When implementing agents discover operational patterns (how to run tests, gotchas about the build system), they should document them in a project README or DEVELOPMENT.md file for future reference.
 
 ## Additional Resources
 
