@@ -24,7 +24,7 @@ mkdir -p .ralph
 # Create config file
 cat > .ralph/config.yaml <<'EOF'
 # Ralph Configuration
-# See: https://github.com/tmcw/ralph
+# See: https://github.com/eumemic/ralph
 
 # Where to find specification files (relative to project root)
 specs_dir: ./specs
