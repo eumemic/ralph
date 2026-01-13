@@ -144,9 +144,9 @@ run_loop() {
         local PLAN_HASH_BEFORE=$(get_plan_hash)
 
         echo ""
-        echo "=========================================="
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         printf "           ITERATION %-17s\n" "$ITERATION"
-        echo "=========================================="
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo ""
 
         # Prepare environment for envsubst
