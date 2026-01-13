@@ -29,9 +29,12 @@ cat > .ralph/config.yaml <<'EOF'
 # Where to find specification files (relative to project root)
 specs_dir: ./specs
 
-# Model configuration (optional - defaults shown)
-# main_model: opus
-# subagent_model: sonnet
+# Shared utilities directory (for code reuse steering)
+shared_utils_dir: ./src/lib
+
+# Git automation (uncomment to enable)
+# auto_push: true
+# auto_tag: true
 EOF
 
 # Create implementation plan placeholder
@@ -47,19 +50,44 @@ ralph plan
 ```
 EOF
 
+# Create AGENTS.md for operational knowledge
+cat > .ralph/AGENTS.md <<'EOF'
+## Build & Run
+
+Succinct rules for how to BUILD the project:
+
+## Validation
+
+Run these after implementing to get immediate feedback:
+
+- Tests: `[test command]`
+- Typecheck: `[typecheck command]`
+- Lint: `[lint command]`
+
+## Operational Notes
+
+Succinct learnings about how to RUN the project:
+
+### Codebase Patterns
+
+EOF
+
 echo ""
 echo "✓ Ralph initialized!"
 echo ""
 echo "Created:"
-echo "  specs/                     Specification files go here"
-echo "  .ralph/config.yaml         Configuration"
-echo "  .ralph/IMPLEMENTATION_PLAN.md  Task list (generated)"
+echo "  specs/                          Specification files go here"
+echo "  .ralph/config.yaml              Configuration"
+echo "  .ralph/IMPLEMENTATION_PLAN.md   Task list (generated)"
+echo "  .ralph/AGENTS.md                Operational knowledge"
 echo ""
 echo "Next steps:"
-echo "  1. Write your first spec in specs/"
+echo "  1. Edit .ralph/AGENTS.md with your build/test commands"
 echo ""
-echo "  2. Run the planning loop:"
+echo "  2. Write your first spec in specs/"
+echo ""
+echo "  3. Run the planning loop:"
 echo "     ralph plan"
 echo ""
-echo "  3. Run the building loop:"
+echo "  4. Run the building loop:"
 echo "     ralph build"

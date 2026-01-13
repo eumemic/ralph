@@ -12,13 +12,13 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PLUGIN_ROOT="$(dirname "$SCRIPT_DIR")"
 
-# Defaults (can be overridden via environment variables)
-: "${RALPH_MODEL:=opus}"
-: "${RALPH_SUBAGENT_MODEL:=sonnet}"
+# Model allocation (hardcoded per original methodology)
+RALPH_MODEL="opus"
 
 # Project paths (relative to current working directory)
 RALPH_DIR=".ralph"
 PLAN_FILE="$RALPH_DIR/IMPLEMENTATION_PLAN.md"
+AGENTS_FILE="$RALPH_DIR/AGENTS.md"
 CONFIG_FILE="$RALPH_DIR/config.yaml"
 
 show_help() {
@@ -37,10 +37,6 @@ Examples:
   ralph plan 5                   Run max 5 planning iterations
   ralph build                    Implement tasks from the plan
   ralph build 20                 Run max 20 build iterations
-
-Environment Variables:
-  RALPH_MODEL          Model for main agent (default: opus)
-  RALPH_SUBAGENT_MODEL Model for subagents (default: sonnet)
 
 The Ralph Workflow:
   1. Write specifications in specs/ (or configured location)
@@ -62,6 +58,32 @@ get_specs_dir() {
         fi
     fi
     echo "./specs"
+}
+
+# Read shared_utils_dir from config, default to ./src/lib
+get_shared_utils_dir() {
+    if [ -f "$CONFIG_FILE" ]; then
+        local dir=$(grep -E '^shared_utils_dir:' "$CONFIG_FILE" 2>/dev/null | sed 's/shared_utils_dir:[[:space:]]*//' | tr -d '"'"'" || echo "")
+        if [ -n "$dir" ]; then
+            echo "$dir"
+            return
+        fi
+    fi
+    echo "./src/lib"
+}
+
+# Read boolean config value (returns "true" or "false")
+get_config_bool() {
+    local key="$1"
+    local default="${2:-false}"
+    if [ -f "$CONFIG_FILE" ]; then
+        local val=$(grep -E "^${key}:" "$CONFIG_FILE" 2>/dev/null | sed "s/${key}:[[:space:]]*//" | tr -d '"'"'" || echo "")
+        if [ "$val" = "true" ]; then
+            echo "true"
+            return
+        fi
+    fi
+    echo "$default"
 }
 
 # Get hash of plan file (empty string if doesn't exist)
@@ -87,6 +109,19 @@ run_loop() {
     local MAX_ITERATIONS="${2:-0}"
     local PROMPT_FILE="$PLUGIN_ROOT/prompts/PROMPT_${MODE}.md"
     local SPECS_DIR=$(get_specs_dir)
+    local SHARED_UTILS_DIR=$(get_shared_utils_dir)
+    local AUTO_PUSH=$(get_config_bool "auto_push" "false")
+    local AUTO_TAG=$(get_config_bool "auto_tag" "false")
+
+    # Build conditional instructions for prompts
+    local AUTO_PUSH_INSTRUCTION=""
+    local AUTO_TAG_INSTRUCTION=""
+    if [ "$AUTO_PUSH" = "true" ]; then
+        AUTO_PUSH_INSTRUCTION="After the commit, \`git push\`."
+    fi
+    if [ "$AUTO_TAG" = "true" ]; then
+        AUTO_TAG_INSTRUCTION="When no build/test errors, create a git tag (start at 0.0.0, increment patch)."
+    fi
 
     # Check prerequisites
     if [ ! -d "$RALPH_DIR" ]; then
@@ -111,10 +146,14 @@ run_loop() {
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo "Ralph - $MODE mode"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo "Model:     $RALPH_MODEL (subagents: $RALPH_SUBAGENT_MODEL)"
+    echo "Model:     $RALPH_MODEL"
     echo "Specs:     $SPECS_DIR"
     echo "Plan:      $PLAN_FILE"
+    echo "Agents:    $AGENTS_FILE"
     echo "Branch:    $CURRENT_BRANCH"
+    if [ "$AUTO_PUSH" = "true" ] || [ "$AUTO_TAG" = "true" ]; then
+        echo "Git:       auto_push=$AUTO_PUSH, auto_tag=$AUTO_TAG"
+    fi
     if [ $MAX_ITERATIONS -gt 0 ]; then
         echo "Max:       $MAX_ITERATIONS iterations"
     else
@@ -149,9 +188,12 @@ run_loop() {
         echo ""
 
         # Prepare environment for envsubst
-        export RALPH_SUBAGENT_MODEL
         export SPECS_DIR
         export PLAN_FILE
+        export AGENTS_FILE
+        export SHARED_UTILS_DIR
+        export AUTO_PUSH_INSTRUCTION
+        export AUTO_TAG_INSTRUCTION
 
         # Run Claude with the prompt
         envsubst < "$PROMPT_FILE" | claude -p \
