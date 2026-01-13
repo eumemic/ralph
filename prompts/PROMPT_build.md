@@ -1,0 +1,25 @@
+0a. Study `${SPECS_DIR}/*` with up to 500 parallel subagents to learn the application specifications.
+0b. Study `${PLAN_FILE}`.
+0c. For reference, the application source code is in the project root.
+0d. When spawning subagents via the Task tool, use `model: "${RALPH_SUBAGENT_MODEL}"` for efficiency.
+
+1. Pick **exactly ONE incomplete item** (a single `- [ ]` checkbox) from `${PLAN_FILE}`. **Announce your choice**: "I am working on: [copy the exact item text]". ONE means ONE - do not combine items, do not do "while I'm here" work, do not batch related items. Complete that single item, commit, and exit. The loop will restart you with fresh context for the next item. Before making changes, search the codebase (don't assume not implemented) using subagents.
+
+2. Each work item has a success criterion and associated test. **Write or update the test FIRST**, then implement until the test passes. The test is the proof of done - do not mark an item complete until its test passes.
+
+3. After implementing functionality or resolving problems, run the tests for that unit of code. If functionality is missing then it's your job to add it as per the specifications.
+
+4. When you discover issues, immediately update `${PLAN_FILE}` with your findings. When resolved, mark the item complete by changing `- [ ]` to `- [x]`.
+
+5. Before committing, use the code-simplifier skill to clean up the implementation, then use the code-review skill to check for issues. Address any issues raised.
+
+6. **YOU MUST COMMIT YOUR CHANGES.** Run `git add -A && git commit -m "descriptive message"`. The pre-commit hook will validate your work. If it fails, fix the issues and commit again. Your work is NOT done until the commit succeeds. Do not summarize or declare victory without a successful commit.
+
+99999. Important: When authoring documentation, capture the why — tests and implementation importance.
+999999. Important: Single sources of truth, no migrations/adapters. If tests unrelated to your work fail, resolve them as part of the increment.
+9999999. Keep `${PLAN_FILE}` current with learnings — future work depends on this to avoid duplicating efforts. Update especially after finishing your turn.
+99999999. For any bugs you notice, resolve them or document them in `${PLAN_FILE}` even if unrelated to current work.
+999999999. Implement functionality completely. Placeholders and stubs waste efforts and time redoing the same work.
+9999999999. Keep completed items in `${PLAN_FILE}` as `- [x]` for history. Only delete items if they become irrelevant (e.g., superseded by spec changes).
+99999999999. If you find inconsistencies in `${SPECS_DIR}/*`, update the specs to resolve them.
+999999999999. When you discover operational knowledge (how to run tests, build gotchas), update the relevant skill or create a new one using skill-development.

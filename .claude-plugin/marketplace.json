@@ -1,0 +1,14 @@
+{
+  "name": "ralph-marketplace",
+  "owner": {
+    "name": "eumemic"
+  },
+  "plugins": [
+    {
+      "name": "ralph",
+      "source": "..",
+      "description": "Autonomous AI-assisted development methodology that keeps specs and code in sync through intelligent iteration loops",
+      "version": "1.0.0"
+    }
+  ]
+}

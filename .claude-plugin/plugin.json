@@ -1,0 +1,10 @@
+{
+  "name": "ralph",
+  "version": "1.0.0",
+  "description": "Autonomous AI-assisted development methodology that keeps specs and code in sync through intelligent iteration loops",
+  "author": {
+    "name": "eumemic"
+  },
+  "license": "MIT",
+  "keywords": ["specs", "autonomous", "planning", "implementation", "sync"]
+}
