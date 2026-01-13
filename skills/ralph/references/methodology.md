@@ -4,13 +4,29 @@ This document covers the principles and mechanics behind the Ralph pattern for a
 
 ## Context Is Everything
 
-When working with LLMs, context window management is critical:
+When working with LLMs, context window management is the primary architectural driver. Every design decision in Ralph flows from this constraint:
 
-- 200K tokens advertised ≈ 176K truly usable
-- 40-60% context utilization for "smart zone" (where model performs best)
-- **Tight tasks + 1 task per loop = 100% smart zone utilization**
+### Why Context Matters
 
-This drives the entire architecture:
+- **200K tokens advertised ≈ 176K truly usable** (system prompts, tool definitions consume the rest)
+- **40-60% context utilization = "smart zone"** where the model performs best
+- Above 60%: quality degrades, hallucinations increase, instructions get ignored
+- Below 40%: wasted capacity, could be doing more per iteration
+
+**The insight:** Tight tasks + 1 task per loop = 100% smart zone utilization every time.
+
+### Fresh Context Per Iteration
+
+Each loop iteration starts a completely new Claude process. This is *intentional*:
+
+- **No context debt** - mistakes and confusion don't accumulate
+- **Consistent starting point** - same files loaded every time (specs, plan, AGENTS.md)
+- **Deterministic setup** - despite non-deterministic outputs, the input is identical
+- **Natural checkpoints** - each commit is a clean break point
+
+The bash loop is deliberately dumb (`while true; do claude -p < PROMPT.md; done`). Intelligence lives in the prompts and specs, not the loop mechanism.
+
+### This Drives the Entire Architecture
 
 ### Main Agent as Scheduler
 
@@ -59,9 +75,22 @@ Create signals and gates to guide successful output. Steer from two directions:
 - LLM-as-judge can provide backpressure for subjective criteria
 - Binary pass/fail reviews that iterate until passing
 
-### Operational Knowledge
+### AGENTS.md: The Heart of the Loop
 
-Document operational patterns (how to run tests, lint, typecheck, build gotchas) in project files like README.md or DEVELOPMENT.md. This keeps the knowledge accessible to future iterations.
+The `.ralph/AGENTS.md` file is loaded every iteration and serves as the operational "cheat sheet" for the building agent. It should contain:
+
+- **Build commands** - How to build/run the project
+- **Validation commands** - Test, typecheck, lint commands
+- **Operational patterns** - Gotchas, workarounds, project-specific knowledge
+- **Codebase patterns** - Key abstractions, naming conventions, architectural decisions
+
+**Critical constraints:**
+
+- **Keep it brief (~60 lines max)** - A bloated AGENTS.md pollutes every future iteration's context
+- **Operational only** - Status updates and progress notes belong in IMPLEMENTATION_PLAN.md, not here
+- **Update sparingly** - Only add patterns that will help future iterations avoid repeated mistakes
+
+Think of AGENTS.md as the "heart of the loop" - it's the single canonical source of "how to run/build" knowledge that persists across all iterations.
 
 ## Let Ralph Ralph
 
@@ -75,16 +104,22 @@ Ralph's effectiveness comes from trusting it to self-correct through iteration:
 
 ### The Plan is Disposable
 
-- Wrong plan? Throw it out, regenerate
-- Regeneration cost = one planning loop
+This is one of Ralph's most important principles: **the implementation plan is cheap to regenerate**.
+
+- Wrong plan? Delete it and run `ralph plan` again
+- Regeneration cost = one planning loop (minutes, not hours)
 - Much cheaper than Ralph going in circles on a bad trajectory
+- You can delete the plan multiple times during a project - this is normal
 
 **Regenerate when:**
-- Going off track (wrong things, duplicate work)
+- Going off track (implementing wrong things, duplicating work)
 - Plan feels stale or doesn't match current state
-- Too much clutter from completed items
-- Significant spec changes
-- Confused about what's actually done
+- Too much clutter from completed items obscuring what's left
+- Significant spec changes that invalidate existing tasks
+- Confused about what's actually done vs. pending
+- Agent seems to be thrashing or repeating itself
+
+**Don't be precious about the plan.** It's a derived artifact, not a source of truth. The specs are the source of truth. If the plan is wrong, throw it out.
 
 ### Move Outside the Loop
 

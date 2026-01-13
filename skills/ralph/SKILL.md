@@ -33,6 +33,7 @@ project-root/
 │   └── data-export.md
 ├── .ralph/                        # Ralph configuration and generated files
 │   ├── config.yaml                # Configuration (specs_dir, model overrides)
+│   ├── AGENTS.md                  # Operational knowledge (build, test, patterns)
 │   └── IMPLEMENTATION_PLAN.md     # Tasks + learnings (generated)
 ├── src/
 └── ...
@@ -197,11 +198,18 @@ RALPH_SUBAGENT_MODEL=sonnet # Subagent model (default: sonnet)
 - Too much clutter from completed items
 - Trajectory feels wrong
 
-The plan is disposable. Regeneration costs one planning loop - cheap compared to wasted building loops.
+**The plan is disposable.** Wrong plan? Delete it and run `ralph plan` again. Regeneration costs one planning loop - cheap compared to wasted building loops. Don't be precious about the plan; the specs are the source of truth.
 
-### Operational Knowledge
+### AGENTS.md: Operational Knowledge
 
-When implementing agents discover operational patterns (how to run tests, gotchas about the build system), they should document them in a project README or DEVELOPMENT.md file for future reference.
+The `.ralph/AGENTS.md` file is the "heart of the loop" - it's loaded every iteration and contains operational knowledge:
+
+- **Build & run commands** - How to build and run the project
+- **Validation commands** - Test, typecheck, lint commands
+- **Operational patterns** - Gotchas, workarounds, project quirks
+- **Codebase patterns** - Key abstractions, naming conventions
+
+**Critical:** Keep AGENTS.md brief (~60 lines max). Status updates and progress belong in IMPLEMENTATION_PLAN.md. A bloated AGENTS.md pollutes every future iteration's context.
 
 ## Additional Resources
 

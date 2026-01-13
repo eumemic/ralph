@@ -90,11 +90,19 @@ auto_push: [true/false based on answer]
 auto_tag: [true/false based on answer]
 ```
 
-3. Write `.ralph/AGENTS.md` with the user's validation commands:
+3. Write `.ralph/AGENTS.md` with the user's validation commands.
+
+**AGENTS.md is the "heart of the loop"** - it's loaded every iteration and provides operational context to the building agent. Keep it brief (~60 lines max) and operational only.
+
 ```markdown
+# AGENTS.md
+
+This file is loaded every iteration. Keep it brief and operational.
+Status updates belong in IMPLEMENTATION_PLAN.md, not here.
+
 ## Build & Run
 
-[Leave blank for user to fill in project-specific build instructions]
+[Project-specific build instructions]
 
 ## Validation
 
@@ -106,9 +114,11 @@ Run these after implementing to get immediate feedback:
 
 ## Operational Notes
 
-Succinct learnings about how to RUN the project:
+Succinct learnings about how to RUN the project (gotchas, workarounds):
 
-### Codebase Patterns
+## Codebase Patterns
+
+Key abstractions and conventions (update as patterns emerge):
 
 ```
 
