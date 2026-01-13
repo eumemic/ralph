@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "ralph",
-      "source": "..",
+      "source": "./",
       "description": "Autonomous AI-assisted development methodology that keeps specs and code in sync through intelligent iteration loops",
       "version": "1.0.0"
     }
