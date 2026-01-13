@@ -11,9 +11,11 @@
 
 4. When you discover issues, immediately update `${PLAN_FILE}` with your findings. When resolved, mark the item complete by changing `- [ ]` to `- [x]`.
 
-5. Before committing, review your implementation for simplicity and correctness. Clean up any unnecessary complexity, check for bugs or issues, and address any problems found.
+5. Before committing, run a **simplification pass**: use a code simplification agent/skill if available, otherwise manually review the files you modified this iteration for clarity, consistency, and maintainability. Apply improvements while preserving functionality.
 
-6. **YOU MUST COMMIT YOUR CHANGES.** When the tests pass, update `${PLAN_FILE}`, then `git add -A && git commit` with a message describing the changes. ${AUTO_PUSH_INSTRUCTION} The pre-commit hook will validate your work. If it fails, fix the issues and commit again. Your work is NOT done until the commit succeeds. Do not summarize or declare victory without a successful commit.
+6. After simplification, run a **code review pass**: use a code review agent/skill if available, otherwise manually review your changes for bugs, logic errors, security issues, and adherence to project conventions. Address any issues found.
+
+7. **YOU MUST COMMIT YOUR CHANGES.** When the tests pass, update `${PLAN_FILE}`, then `git add -A && git commit` with a message describing the changes. ${AUTO_PUSH_INSTRUCTION} The pre-commit hook will validate your work. If it fails, fix the issues and commit again. Your work is NOT done until the commit succeeds. Do not summarize or declare victory without a successful commit.
 
 99999. Important: When authoring documentation, capture the why — tests and implementation importance.
 999999. Important: Single sources of truth, no migrations/adapters. If tests unrelated to your work fail, resolve them as part of the increment.
