@@ -88,6 +88,27 @@ RALPH_MODEL=opus            # Main agent (default: opus)
 RALPH_SUBAGENT_MODEL=sonnet # Subagents (default: sonnet)
 ```
 
+## Project Structure
+
+```
+your-project/
+├── specs/                         # Commit this - your specifications
+│   ├── feature-one.md
+│   └── feature-two.md
+├── .ralph/                        # Gitignore this - generated files
+│   ├── config.yaml
+│   └── IMPLEMENTATION_PLAN.md
+└── src/
+```
+
+- **`specs/`** should be committed to your repo - these are your project's requirements
+- **`.ralph/`** should be gitignored - it contains generated files and local config
+
+Add to your `.gitignore`:
+```
+.ralph/
+```
+
 ## Configuration
 
 Edit `.ralph/config.yaml`:
