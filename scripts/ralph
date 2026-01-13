@@ -145,7 +145,7 @@ run_loop() {
 
         echo ""
         echo "╔══════════════════════════════════════╗"
-        echo "║         ITERATION $ITERATION"
+        printf "║           ITERATION %-17s ║\n" "$ITERATION"
         echo "╚══════════════════════════════════════╝"
         echo ""
 
