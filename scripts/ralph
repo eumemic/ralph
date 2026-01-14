@@ -103,10 +103,22 @@ get_plan_hash() {
     fi
 }
 
-# Check if plan has pending tasks (unchecked markdown checkboxes)
+# Check if plan has pending tasks
+# Looks for:
+#   - [ ] unchecked checkbox format (preferred)
+#   - ### N. numbered heading format (fallback)
 plan_has_pending_tasks() {
     if [ -f "$PLAN_FILE" ]; then
-        grep -q '^\s*- \[ \]' "$PLAN_FILE"
+        # First check for checkbox format
+        if grep -q '^\s*- \[ \]' "$PLAN_FILE"; then
+            return 0
+        fi
+        # Fallback: check for numbered headings (### 1., ### 2., etc.)
+        # These indicate tasks if the plan has content beyond just headers
+        if grep -q '^### [0-9]' "$PLAN_FILE"; then
+            return 0
+        fi
+        return 1
     else
         return 1
     fi
