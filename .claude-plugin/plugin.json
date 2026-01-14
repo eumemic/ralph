@@ -1,6 +1,6 @@
 {
   "name": "ralph",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Autonomous AI-assisted development methodology that keeps specs and code in sync through intelligent iteration loops",
   "author": {
     "name": "eumemic"
