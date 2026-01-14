@@ -2,10 +2,11 @@
 # Ralph - Spec-to-Code Synchronization Engine
 #
 # Usage:
-#   ralph plan [max_iterations]           # Run planning loop (full scope)
-#   ralph plan "scope" [max_iterations]   # Run planning loop (scoped to work)
-#   ralph build [max_iterations]          # Run building loop
-#   ralph --help                          # Show help
+#   ralph plan [max_iterations]                        # Run planning loop (full scope)
+#   ralph plan "scope" [max_iterations]                # Run planning loop (scoped to work)
+#   ralph plan --stable N [other args]                 # Require N stable iterations (default: 2)
+#   ralph build [max_iterations]                       # Run building loop
+#   ralph --help                                       # Show help
 
 set -euo pipefail
 
@@ -28,6 +29,7 @@ Ralph - Spec-to-Code Synchronization Engine
 Usage:
   ralph plan [max_iterations]           Run planning loop (full scope)
   ralph plan "scope" [max_iterations]   Run planning loop (scoped to work)
+  ralph plan --stable N [other args]    Require N unchanged iterations (default: 2)
   ralph build [max_iterations]          Run building loop (implementation)
   ralph --help                          Show this help
 
@@ -36,6 +38,7 @@ Examples:
   ralph plan 5                   Run max 5 planning iterations
   ralph plan "user auth"         Plan only tasks related to user authentication
   ralph plan "OAuth login" 3     Scoped planning, max 3 iterations
+  ralph plan --stable 3          Require 3 stable iterations before completing
   ralph build                    Implement tasks from the plan
   ralph build 20                 Run max 20 build iterations
 
@@ -153,6 +156,8 @@ run_loop() {
     fi
 
     local ITERATION=0
+    local STABLE_COUNT=0
+    local REQUIRED_STABLE_ITERATIONS="${4:-2}"
     local CURRENT_BRANCH=$(git branch --show-current 2>/dev/null || echo "not a git repo")
 
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
@@ -165,6 +170,9 @@ run_loop() {
     echo "Branch:    $CURRENT_BRANCH"
     if [ -n "$WORK_SCOPE" ]; then
         echo "Scope:     $WORK_SCOPE"
+    fi
+    if [ "$MODE" = "plan" ]; then
+        echo "Stable:    $REQUIRED_STABLE_ITERATIONS iterations required"
     fi
     if [ "$AUTO_PUSH" = "true" ] || [ "$AUTO_TAG" = "true" ]; then
         echo "Git:       auto_push=$AUTO_PUSH, auto_tag=$AUTO_TAG"
@@ -222,11 +230,18 @@ run_loop() {
         # Check if plan changed (for planning mode termination)
         local PLAN_HASH_AFTER=$(get_plan_hash)
         if [ "$MODE" = "plan" ] && [ "$PLAN_HASH_BEFORE" = "$PLAN_HASH_AFTER" ] && [ -n "$PLAN_HASH_BEFORE" ]; then
+            STABLE_COUNT=$((STABLE_COUNT + 1))
             echo ""
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            echo "Plan unchanged - planning complete"
-            echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-            break
+            echo "Plan unchanged ($STABLE_COUNT/$REQUIRED_STABLE_ITERATIONS stable iterations)"
+            if [ $STABLE_COUNT -ge $REQUIRED_STABLE_ITERATIONS ]; then
+                echo ""
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                echo "Plan stable for $REQUIRED_STABLE_ITERATIONS iterations - planning complete"
+                echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+                break
+            fi
+        else
+            STABLE_COUNT=0
         fi
     done
 }
@@ -242,16 +257,34 @@ case "${1:-}" in
         exit 1
         ;;
     plan)
-        # Check if second arg is a number (max_iterations) or a string (scope)
-        if [[ "${2:-}" =~ ^[0-9]+$ ]]; then
+        # Parse --stable N if present
+        STABLE_ITERATIONS=2
+        PLAN_ARGS=("${@:2}")
+        NEW_ARGS=()
+        i=0
+        while [ $i -lt ${#PLAN_ARGS[@]} ]; do
+            if [ "${PLAN_ARGS[$i]}" = "--stable" ]; then
+                STABLE_ITERATIONS="${PLAN_ARGS[$((i+1))]}"
+                i=$((i+2))
+            else
+                NEW_ARGS+=("${PLAN_ARGS[$i]}")
+                i=$((i+1))
+            fi
+        done
+
+        # Now parse remaining args: [scope] [max_iterations]
+        ARG1="${NEW_ARGS[0]:-}"
+        ARG2="${NEW_ARGS[1]:-}"
+
+        if [[ "$ARG1" =~ ^[0-9]+$ ]]; then
             # ralph plan 5
-            run_loop "plan" "${2:-0}" ""
-        elif [ -n "${2:-}" ]; then
+            run_loop "plan" "$ARG1" "" "$STABLE_ITERATIONS"
+        elif [ -n "$ARG1" ]; then
             # ralph plan "scope" [max_iterations]
-            run_loop "plan" "${3:-0}" "$2"
+            run_loop "plan" "${ARG2:-0}" "$ARG1" "$STABLE_ITERATIONS"
         else
             # ralph plan
-            run_loop "plan" "0" ""
+            run_loop "plan" "0" "" "$STABLE_ITERATIONS"
         fi
         ;;
     build)

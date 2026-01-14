@@ -1,11 +1,15 @@
-0a. Study `${SPECS_DIR}/*` with up to 250 parallel **Sonnet** subagents to learn the application specifications.
-0b. Study `${PLAN_FILE}` (if present) to understand the plan so far.
-0c. Study `${SHARED_UTILS_DIR}/*` with up to 250 parallel **Sonnet** subagents to understand shared utilities & components.
-0d. For reference, the application source code is in the project root.
+0a. Study `${PLAN_FILE}` (if present) to understand the current plan.
+0b. Study `${SHARED_UTILS_DIR}/*` to understand shared utilities & components.
 
-1. Study `${PLAN_FILE}` (if present; it may be incorrect) and use up to 500 **Sonnet** subagents to study existing source code and compare it against `${SPECS_DIR}/*`. Use an **Opus** subagent to analyze findings, prioritize tasks, and create/update `${PLAN_FILE}` as a bullet point list sorted by priority of items yet to be implemented. Consider searching for TODO, minimal implementations, placeholders, skipped/flaky tests, and inconsistent patterns. Keep the plan up to date with items considered complete/incomplete.
+1. **Gap analysis per spec**: Launch one **Sonnet** subagent per spec file in `${SPECS_DIR}/*`. Each subagent is responsible for:
+   - Reading its assigned spec file thoroughly
+   - Searching the codebase to find what's implemented vs. missing
+   - Reporting gaps: requirements in the spec that aren't fully implemented
+   - Checking for TODOs, placeholders, skipped tests, incomplete implementations related to its spec
 
-2. Each work item in the plan MUST include:
+2. Collect findings from all subagents. Use an **Opus** subagent to analyze the combined findings, prioritize tasks, and create/update `${PLAN_FILE}` as a bullet point list sorted by priority. Mark items complete/incomplete based on actual code state.
+
+3. Each work item in the plan MUST include:
    - **Spec reference**: Which spec file defines the requirement (e.g., `[spec: client-managed-chunking.md]`)
    - **Success criterion**: A testable condition that proves the item is complete (e.g., "Success: `append_batch(['A', 'B', 'C'])` with `target_chunk_tokens=None` creates exactly 3 leaves")
    - **Test**: The test function that will verify the success criterion (e.g., "Test: `test_append_batch_preserves_atomic_units`")
