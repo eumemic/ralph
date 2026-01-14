@@ -5,4 +5,4 @@
 # Filters out subagent messages before transcription.
 # Uses claude-transcriber library: pip install claude-transcriber
 
-jq -c 'select(.parent_tool_use_id == null)' | claude-transcriber
+jq --unbuffered -c 'select(.parent_tool_use_id == null)' | claude-transcriber
