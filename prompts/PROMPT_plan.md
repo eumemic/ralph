@@ -25,4 +25,4 @@ IMPORTANT: Treat `${SHARED_UTILS_DIR}` as the project's standard library for sha
 
 IMPORTANT: Don't make trivial tweaks to the plan. If the existing plan is substantively correct and complete, leave it alone. Only modify the plan when there are real gaps, incorrect items, or missing work. Reformatting, rewording, or reorganizing without adding substance is wasted effort.
 
-ULTIMATE GOAL: Sync the codebase to match the specifications. Consider missing elements and plan accordingly. If an element is missing from specs, search first to confirm it doesn't exist in code, then if needed author the specification at `${SPECS_DIR}/FILENAME.md`.
+ULTIMATE GOAL: ${SCOPE_INSTRUCTION}Consider missing elements and plan accordingly. If an element is missing from specs, search first to confirm it doesn't exist in code, then if needed author the specification at `${SPECS_DIR}/FILENAME.md`.

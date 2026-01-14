@@ -2,9 +2,10 @@
 # Ralph - Spec-to-Code Synchronization Engine
 #
 # Usage:
-#   ralph plan [max_iterations]    # Run planning loop
-#   ralph build [max_iterations]   # Run building loop
-#   ralph --help                   # Show help
+#   ralph plan [max_iterations]           # Run planning loop (full scope)
+#   ralph plan "scope" [max_iterations]   # Run planning loop (scoped to work)
+#   ralph build [max_iterations]          # Run building loop
+#   ralph --help                          # Show help
 
 set -euo pipefail
 
@@ -25,13 +26,16 @@ show_help() {
 Ralph - Spec-to-Code Synchronization Engine
 
 Usage:
-  ralph plan [max_iterations]    Run the planning loop (gap analysis)
-  ralph build [max_iterations]   Run the building loop (implementation)
-  ralph --help                   Show this help
+  ralph plan [max_iterations]           Run planning loop (full scope)
+  ralph plan "scope" [max_iterations]   Run planning loop (scoped to work)
+  ralph build [max_iterations]          Run building loop (implementation)
+  ralph --help                          Show this help
 
 Examples:
   ralph plan                     Analyze specs and generate implementation plan
   ralph plan 5                   Run max 5 planning iterations
+  ralph plan "user auth"         Plan only tasks related to user authentication
+  ralph plan "OAuth login" 3     Scoped planning, max 3 iterations
   ralph build                    Implement tasks from the plan
   ralph build 20                 Run max 20 build iterations
 
@@ -108,11 +112,18 @@ plan_has_pending_tasks() {
 run_loop() {
     local MODE="$1"
     local MAX_ITERATIONS="${2:-0}"
+    local WORK_SCOPE="${3:-}"
     local PROMPT_FILE="$PLUGIN_ROOT/prompts/PROMPT_${MODE}.md"
     local SPECS_DIR=$(get_specs_dir)
     local SHARED_UTILS_DIR=$(get_shared_utils_dir)
     local AUTO_PUSH=$(get_config_bool "auto_push" "false")
     local AUTO_TAG=$(get_config_bool "auto_tag" "false")
+
+    # Build scope instruction for planning
+    local SCOPE_INSTRUCTION="Sync the codebase to match the specifications. "
+    if [ -n "$WORK_SCOPE" ]; then
+        SCOPE_INSTRUCTION="Focus on: \"$WORK_SCOPE\". Only plan tasks related to this scope. "
+    fi
 
     # Build conditional instructions for prompts
     local AUTO_PUSH_INSTRUCTION=""
@@ -152,6 +163,9 @@ run_loop() {
     echo "Plan:      $PLAN_FILE"
     echo "Agents:    $AGENTS_FILE"
     echo "Branch:    $CURRENT_BRANCH"
+    if [ -n "$WORK_SCOPE" ]; then
+        echo "Scope:     $WORK_SCOPE"
+    fi
     if [ "$AUTO_PUSH" = "true" ] || [ "$AUTO_TAG" = "true" ]; then
         echo "Git:       auto_push=$AUTO_PUSH, auto_tag=$AUTO_TAG"
     fi
@@ -195,6 +209,7 @@ run_loop() {
         export SHARED_UTILS_DIR
         export AUTO_PUSH_INSTRUCTION
         export AUTO_TAG_INSTRUCTION
+        export SCOPE_INSTRUCTION
 
         # Run Claude with the prompt
         envsubst < "$PROMPT_FILE" | claude -p \
@@ -227,7 +242,17 @@ case "${1:-}" in
         exit 1
         ;;
     plan)
-        run_loop "plan" "${2:-0}"
+        # Check if second arg is a number (max_iterations) or a string (scope)
+        if [[ "${2:-}" =~ ^[0-9]+$ ]]; then
+            # ralph plan 5
+            run_loop "plan" "${2:-0}" ""
+        elif [ -n "${2:-}" ]; then
+            # ralph plan "scope" [max_iterations]
+            run_loop "plan" "${3:-0}" "$2"
+        else
+            # ralph plan
+            run_loop "plan" "0" ""
+        fi
         ;;
     build)
         run_loop "build" "${2:-0}"
