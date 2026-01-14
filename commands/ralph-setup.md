@@ -1,20 +1,27 @@
 ---
 name: ralph-setup
-description: Install the Ralph CLI to your system PATH for easy terminal access
+description: Install the Ralph CLI and dependencies for terminal access
 ---
 
 # Ralph CLI Setup
 
-Help the user install the `ralph` CLI command to their system so they can run `ralph plan` and `ralph build` from any project directory.
+Help the user install the `ralph` CLI command and its dependencies so they can run `ralph plan` and `ralph build` from any project directory.
 
 ## Steps
 
-1. **Detect the user's environment:**
+1. **Install Python dependencies:**
+   ```bash
+   pip install claude-transcriber
+   ```
+
+   This library is used to format Claude's streaming output during plan/build loops.
+
+2. **Detect the user's environment:**
    - Check their shell (bash, zsh, fish)
    - Check their OS (macOS, Linux)
    - Check if `~/.local/bin` exists and is in PATH
 
-2. **Offer installation options based on what's available:**
+3. **Offer installation options based on what's available:**
 
    **Option A: ~/.local/bin (Recommended for most users)**
    - Create `~/.local/bin` if it doesn't exist
@@ -29,7 +36,7 @@ Help the user install the `ralph` CLI command to their system so they can run `r
    - Add an alias to their shell config (.bashrc, .zshrc, config.fish)
    - No symlinks or permissions needed
 
-3. **Execute the chosen installation:**
+4. **Execute the chosen installation:**
 
    For Option A (recommended):
 
@@ -86,13 +93,13 @@ WRAPPER
    alias ralph='$(ls -td ~/.claude/plugins/cache/eumemic/ralph/*/scripts/ralph 2>/dev/null | head -1)'
    ```
 
-4. **Verify the installation:**
+5. **Verify the installation:**
    ```bash
    which ralph
    ralph --help
    ```
 
-5. **Tell the user they may need to restart their terminal** or run `source ~/.bashrc` (or equivalent) for changes to take effect.
+6. **Tell the user they may need to restart their terminal** or run `source ~/.bashrc` (or equivalent) for changes to take effect.
 
 ## Important Notes
 
