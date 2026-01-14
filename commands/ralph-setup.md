@@ -32,11 +32,24 @@ Help the user install the `ralph` CLI command to their system so they can run `r
 3. **Execute the chosen installation:**
 
    For Option A (recommended):
+
+   Create a **wrapper script** (not a symlink) that finds the latest installed version:
    ```bash
    mkdir -p ~/.local/bin
-   ln -sf "${CLAUDE_PLUGIN_ROOT}/scripts/ralph" ~/.local/bin/ralph
+   cat > ~/.local/bin/ralph << 'WRAPPER'
+#!/bin/bash
+# Ralph CLI wrapper - finds latest installed version
+RALPH_SCRIPT=$(ls -td ~/.claude/plugins/cache/eumemic/ralph/*/scripts/ralph 2>/dev/null | head -1)
+if [ -z "$RALPH_SCRIPT" ] || [ ! -f "$RALPH_SCRIPT" ]; then
+    echo "Error: Ralph plugin not found. Install with: claude plugin install ralph@eumemic"
+    exit 1
+fi
+exec "$RALPH_SCRIPT" "$@"
+WRAPPER
    chmod +x ~/.local/bin/ralph
    ```
+
+   This wrapper automatically uses the latest version after `claude plugin update ralph@eumemic`.
 
    Then check if `~/.local/bin` is in PATH. If not, tell them to add:
    ```bash
@@ -50,15 +63,27 @@ Help the user install the `ralph` CLI command to their system so they can run `r
    fish_add_path ~/.local/bin
    ```
 
-   For Option B:
+   For Option B (/usr/local/bin):
+
+   Create the same wrapper script but in /usr/local/bin:
    ```bash
-   sudo ln -sf "${CLAUDE_PLUGIN_ROOT}/scripts/ralph" /usr/local/bin/ralph
+   sudo tee /usr/local/bin/ralph << 'WRAPPER' > /dev/null
+#!/bin/bash
+# Ralph CLI wrapper - finds latest installed version
+RALPH_SCRIPT=$(ls -td ~/.claude/plugins/cache/eumemic/ralph/*/scripts/ralph 2>/dev/null | head -1)
+if [ -z "$RALPH_SCRIPT" ] || [ ! -f "$RALPH_SCRIPT" ]; then
+    echo "Error: Ralph plugin not found. Install with: claude plugin install ralph@eumemic"
+    exit 1
+fi
+exec "$RALPH_SCRIPT" "$@"
+WRAPPER
+   sudo chmod +x /usr/local/bin/ralph
    ```
 
-   For Option C:
+   For Option C (shell alias):
    ```bash
-   # Add to shell config:
-   alias ralph='${CLAUDE_PLUGIN_ROOT}/scripts/ralph'
+   # Add to shell config (.bashrc, .zshrc, config.fish):
+   alias ralph='$(ls -td ~/.claude/plugins/cache/eumemic/ralph/*/scripts/ralph 2>/dev/null | head -1)'
    ```
 
 4. **Verify the installation:**
