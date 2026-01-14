@@ -11,10 +11,10 @@ Help the user install the `ralph` CLI command and its dependencies so they can r
 
 1. **Install Python dependencies:**
    ```bash
-   pip install claude-transcriber
+   pip install 'claude-transcriber>=0.2.0'
    ```
 
-   This library is used to format Claude's streaming output during plan/build loops.
+   This library is used to format Claude's streaming output during plan/build loops. Version 0.2.0+ is required for proper streaming support.
 
 2. **Detect the user's environment:**
    - Check their shell (bash, zsh, fish)

@@ -224,7 +224,7 @@ run_loop() {
             --dangerously-skip-permissions \
             --model "$RALPH_MODEL" \
             --output-format stream-json \
-            --verbose \
+            --verbose 2>&1 \
             | "$PLUGIN_ROOT/scripts/stream-progress.sh"
 
         # Check if plan changed (for planning mode termination)
