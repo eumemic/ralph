@@ -222,15 +222,6 @@ Process:
 2. Review the generated/updated plan
 3. Run `ralph build` to implement the planned tasks
 
-**Offering to run loops:**
-You can offer to run the loops in the background for the user:
-```bash
-ralph plan "scope string"  # Run with run_in_background: true
-ralph build                # Run with run_in_background: true
-```
-
-Or the user may prefer to run them manually in their terminal. Ask which they prefer.
-
 ### Quick Reference: Gap Diagnosis
 
 | Symptom | Likely Gap Type | Action |
@@ -270,7 +261,11 @@ ralph build 10          # Run building loop, max 10 iterations
 ralph --help            # Show help
 ```
 
-When the user asks to "run the planning loop" or "run the building loop", run the command in the background (`run_in_background: true`). **Do NOT attempt to act out the loop yourself** by reading the prompts and doing gap analysis - that defeats the purpose of fresh context each iteration.
+When the user asks to "run the planning loop" or "run the building loop", you can either:
+- **Run it for them** in the background (`run_in_background: true`) - offer this option
+- **Let them run it** manually in their terminal - some users prefer this
+
+Ask which they prefer. Either way, **do NOT attempt to act out the loop yourself** by reading the prompts and doing gap analysis - that defeats the purpose of fresh context each iteration.
 
 ### Environment Variables
 
