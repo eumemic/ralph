@@ -127,9 +127,15 @@ DRAFT ──► READY ──► COMPLETE
 ### Important Rules
 
 1. **You manage statuses** - Planning and building loops do NOT change spec statuses
-2. **Ask before transitioning** - Confirm with user before marking READY or COMPLETE
-3. **Default to DRAFT** - New specs start as DRAFT until user approves
-4. **COMPLETE requires user sign-off** - Never mark COMPLETE without explicit user confirmation
+2. **Every spec modification requires a status check** - After ANY change to a spec file, verify the status is correct:
+   - Modified a COMPLETE spec? → Change to READY (or DRAFT if major rework)
+   - Created a new spec? → Ensure it's DRAFT
+   - User approved changes? → Change DRAFT to READY
+3. **Ask before transitioning** - Confirm with user before marking READY or COMPLETE
+4. **Default to DRAFT** - New specs start as DRAFT until user approves
+5. **COMPLETE requires user sign-off** - Never mark COMPLETE without explicit user confirmation
+
+**CRITICAL: If you modify a spec and don't update its status, the planning/building loops won't see your changes.** This is the most common mistake - always check the status after editing.
 
 ## Spec Development
 
