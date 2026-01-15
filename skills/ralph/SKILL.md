@@ -257,6 +257,7 @@ Reference files for detailed guidance:
 
 - **`references/spec-writing.md`** - Four-phase spec writing process
 - **`references/debugging-and-extending-specs.md`** - Gap diagnosis and resolution workflow
+- **`references/bugs-vs-gaps.md`** - When to use Ralph vs. debugging workflows
 - **`references/methodology.md`** - Ralph principles, context optimization, subagent architecture
 - **`references/prompt-anatomy.md`** - Prompt structure, guardrail numbering, language patterns
 
