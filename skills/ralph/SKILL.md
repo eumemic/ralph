@@ -135,80 +135,22 @@ DRAFT ──► READY ──► COMPLETE
 
 This is the human's primary activity. Collaborate with Claude to turn fuzzy ideas into clear specs.
 
-**CRITICAL: Do NOT write the spec file until Phase 3.** The conversation must reach closure first.
+**For the detailed four-phase process, see `references/spec-writing.md`.**
 
-### Three-Phase Process
+### Quick Summary
 
-#### Phase 1: Freeform Discussion
+| Phase | Activity | Output |
+|-------|----------|--------|
+| 1. Freeform Discussion | Conversational exploration of the idea | Understanding of JTBD |
+| 2. Structured Interrogation | Use AskUserQuestion to resolve all ambiguity | All decisions resolved |
+| 3. Draft Spec | Write `specs/filename.md` with `status: DRAFT` | Spec file created |
+| 4. User Approval | Get explicit sign-off, change to `status: READY` | Spec ready for implementation |
 
-Let the user talk through the idea. This is a *conversation*, not an interrogation:
-
-- **Even if a starting point exists** (e.g., a GitHub issue), don't assume it's complete
-- Summarize your understanding, then ask: "Is there anything else you want to add or discuss before I start asking specific questions?"
-- Let the user explain in their own words - don't interrupt with structured questions yet
-- Understand the JTBD (Job to Be Done) - what is the *user* trying to accomplish?
-- Note design issues the user raises
-- **Investigate the codebase** - read relevant code to understand what exists and how it works
-- **Consult skills** - use relevant skills to understand the system
-- Ask clarifying questions naturally as they arise, but keep it conversational
-- Do NOT create any files yet
-- Do NOT jump to Phase 2 until the user explicitly indicates they're ready
-
-#### Phase 2: Structured Interrogation
-
-Once the user confirms they're ready for questions, systematically probe for gaps using the AskUserQuestion tool:
-
-- **You MUST use the AskUserQuestion tool** - not bullet points, not numbered lists, not prose questions
-- AskUserQuestion is a tool that presents multiple-choice options to the user
-- Keep asking questions until every design decision is resolved with zero ambiguity
-- Continue investigating code as new areas come up
-- Identify edge cases, constraints, acceptance criteria
-- Surface tradeoffs and get the user's preference
-
-**The goal of Phase 2 is a completely unambiguous spec.** No "open questions", no "TBD", no "we'll figure it out later". If something is unclear, ask another question.
-
-**Signs you're not done:** Any decision could go multiple ways, user seems uncertain, you're tempted to write "open questions" in the spec, you haven't looked at all the code that will be affected.
-
-#### Phase 3: Draft the Spec
-
-Only when the user confirms readiness, write the spec:
-
-- Write directly to `specs/filename.md` (or configured specs_dir)
-- **Start with `status: DRAFT`** in the YAML frontmatter
-- Format is flexible - capture what matters clearly
-- Include: JTBD, acceptance criteria, edge cases, constraints, key design decisions
-- No "open questions" section - those should be resolved in Phase 2
-
-If the user isn't satisfied with the draft, return to Phase 1 for another round.
-
-#### Phase 4: Approve for Implementation
-
-After the user reviews and approves the spec:
-
-- Change `status: DRAFT` to `status: READY`
-- Confirm with user: "The spec is ready. Should I mark it READY for planning and implementation?"
-- Only transition after explicit user approval
-
-### Topics of Concern
-
-Break each JTBD into topics. Each topic becomes one spec file.
-
-**Test:** Can you describe the topic in one sentence without "and"?
-
-- "The color extraction system analyzes images to identify dominant colors" (one topic)
-- "The user system handles authentication, profiles, and billing" (three topics - split it)
-
-### Spec Content
-
-Specs should be detailed enough that a planning agent can do gap analysis against the codebase. Focus on:
-
-- **What success looks like** - observable outcomes
-- **Acceptance criteria** - testable conditions that prove the feature works. Each criterion should be concrete enough to become a test case (e.g., "`append_batch(['A', 'B', 'C'])` creates exactly 3 leaves" not "batch append works correctly")
-- **Edge cases** - what could go wrong, with expected behavior for each
-- **Constraints** - performance, security, compatibility
-- **Key design decisions** - choices made during Phase 2 and their rationale
-
-**Testability principle:** If you can't describe how to test a requirement, the requirement isn't clear enough. Every acceptance criterion should map to a test.
+**Critical rules:**
+- Do NOT write the spec file until Phase 3
+- Use AskUserQuestion tool in Phase 2 (not prose questions)
+- No "open questions" in specs - resolve everything first
+- One topic per spec file (use the "and" test to check)
 
 ## Debugging & Extending
 
@@ -400,9 +342,10 @@ The `.ralph/AGENTS.md` file is the "heart of the loop" - it's loaded every itera
 
 ## Additional Resources
 
-For detailed methodology and prompt structure:
+Reference files for detailed guidance:
 
-- **`references/methodology.md`** - Deep dive on Ralph principles, context optimization, subagent architecture
+- **`references/spec-writing.md`** - Detailed four-phase spec writing process
+- **`references/methodology.md`** - Ralph principles, context optimization, subagent architecture
 - **`references/prompt-anatomy.md`** - Prompt structure, guardrail numbering, language patterns
 
 ## Credits
