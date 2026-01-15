@@ -1,6 +1,6 @@
 ---
 name: ralph
-description: This skill should be used when the user asks to "write a spec", "create a spec", "define requirements", "use ralph", "ralph methodology", "autonomous development", "sync specs to code", "run the planning loop", "run the building loop", or mentions the Ralph workflow for AI-assisted development.
+description: This skill should be used when the user asks to "write a spec", "create a spec", "define requirements", "use ralph", "ralph methodology", "autonomous development", "sync specs to code", "run the planning loop", "run the building loop", "fix what ralph built", "ralph built the wrong thing", "extend this feature", "the spec was wrong", "update the spec", or mentions the Ralph workflow for AI-assisted development.
 ---
 
 # Ralph: Spec-to-Code Synchronization
@@ -141,6 +141,105 @@ Specs should be detailed enough that a planning agent can do gap analysis agains
 - **Key design decisions** - choices made during Phase 2 and their rationale
 
 **Testability principle:** If you can't describe how to test a requirement, the requirement isn't clear enough. Every acceptance criterion should map to a test.
+
+## Debugging & Extending
+
+When users discover problems with what Ralph built, or want to extend existing functionality, follow this diagnostic workflow.
+
+### Step 1: Diagnose the Gap Type
+
+Before jumping to solutions, determine what kind of gap exists:
+
+**Option A: Implementation Gap**
+The spec was correct, but the planners/builders failed to implement it correctly or at all.
+
+Signs:
+- Spec clearly describes the expected behavior
+- Code doesn't match what the spec says
+- Tests are missing or don't cover the spec's acceptance criteria
+- Feature exists but has bugs that violate spec requirements
+
+**Option B: Design Gap**
+The spec was underspecified (planners filled in the blanks), the spec was wrong but faithfully implemented, or the user wants entirely new features.
+
+Signs:
+- Spec is vague or missing details that would have prevented the problem
+- Implementation matches the spec, but the spec didn't capture what the user actually wanted
+- User is describing behavior that isn't covered by any spec
+- User says "I didn't think about..." or "I assumed it would..."
+
+**How to diagnose:** Read the relevant spec(s) and compare to the problematic code/behavior. Ask:
+- Does the spec clearly define the expected behavior?
+- Does the code match what the spec says?
+- Is the problem that the spec is wrong, or that the implementation is wrong?
+
+### Step 2: Close Design Gaps (if applicable)
+
+If you identified a design gap, the specs need work before implementation can proceed.
+
+**For underspecified or wrong specs:**
+1. Return to the three-phase spec process (Phase 1: discuss, Phase 2: interrogate, Phase 3: write)
+2. Focus on the specific gap - you don't need to rewrite the whole spec
+3. Update the existing spec file with corrections or additions
+4. Be explicit about what changed and why
+
+**For new features:**
+1. Determine if this is a new topic (new spec file) or an extension of existing topic (update existing spec)
+2. Follow the full three-phase process for new material
+3. Write or update spec files accordingly
+
+After closing design gaps, you now have an implementation gap (the specs describe something the code doesn't do yet).
+
+### Step 3: Close Implementation Gaps
+
+You have two options for closing implementation gaps:
+
+**Option A: Targeted Fix (for small, well-defined gaps)**
+
+Best when:
+- The fix is localized (1-3 files)
+- You understand exactly what needs to change
+- The change is low-risk and straightforward
+
+Process:
+1. Deploy a subagent to investigate the specific gap
+2. Have the subagent plan and implement the fix
+3. Review their work before committing
+4. Run relevant tests to validate
+
+**Option B: Re-run Ralph Loops (for larger gaps or when unsure)**
+
+Best when:
+- Multiple related changes are needed
+- You're not confident about the full scope
+- The specs changed significantly
+- You want the planning loop to discover related gaps
+
+Process:
+1. Run `ralph plan "scope string"` with a scope that targets the changed specs
+   - Example: `ralph plan "user authentication"` after updating auth specs
+   - The scope ensures the planner focuses on the relevant area
+2. Review the generated/updated plan
+3. Run `ralph build` to implement the planned tasks
+
+**Offering to run loops:**
+You can offer to run the loops in the background for the user:
+```bash
+ralph plan "scope string"  # Run with run_in_background: true
+ralph build                # Run with run_in_background: true
+```
+
+Or the user may prefer to run them manually in their terminal. Ask which they prefer.
+
+### Quick Reference: Gap Diagnosis
+
+| Symptom | Likely Gap Type | Action |
+|---------|----------------|--------|
+| "It doesn't work like the spec says" | Implementation | Targeted fix or re-run build |
+| "The spec didn't cover this case" | Design | Update spec, then implement |
+| "I want to add a new feature" | Design | New/updated spec, then implement |
+| "It works as specced but that's wrong" | Design | Fix spec, then re-implement |
+| "Ralph built the wrong thing" | Check both | Read spec - if spec is right, implementation gap; if spec is wrong/vague, design gap |
 
 ## Operations
 
