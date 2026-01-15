@@ -1,3 +1,7 @@
+---
+status: DRAFT
+---
+
 # Feature: [Name]
 
 ## Overview

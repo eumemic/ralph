@@ -1,7 +1,8 @@
 0a. Study `${PLAN_FILE}` (if present) to understand the current plan.
 0b. Study `${SHARED_UTILS_DIR}/*` to understand shared utilities & components.
+0c. Get the list of READY specs by running: `${PLUGIN_ROOT}/scripts/get-ready-specs.sh ${SPECS_DIR}`
 
-1. **Gap analysis per spec**: Launch one **Sonnet** subagent per spec file in `${SPECS_DIR}/*`. Each subagent is responsible for:
+1. **Gap analysis per READY spec**: Launch one **Sonnet** subagent per READY spec file (from step 0c). Each subagent is responsible for:
    - Reading its assigned spec file thoroughly
    - Searching the codebase to find what's implemented vs. missing
    - Reporting gaps: requirements in the spec that aren't fully implemented
@@ -29,4 +30,8 @@ IMPORTANT: Treat `${SHARED_UTILS_DIR}` as the project's standard library for sha
 
 IMPORTANT: Don't make trivial tweaks to the plan. If the existing plan is substantively correct and complete, leave it alone. Only modify the plan when there are real gaps, incorrect items, or missing work. Reformatting, rewording, or reorganizing without adding substance is wasted effort.
 
-ULTIMATE GOAL: ${SCOPE_INSTRUCTION}Consider missing elements and plan accordingly. If an element is missing from specs, search first to confirm it doesn't exist in code, then if needed author the specification at `${SPECS_DIR}/FILENAME.md`.
+IMPORTANT: Only analyze specs with `status: READY`. Ignore DRAFT specs (work in progress) and COMPLETE specs (already done). If no READY specs exist, report this and exit - there's nothing to plan.
+
+IMPORTANT: Do NOT change spec statuses. Status management (DRAFT → READY → COMPLETE) is handled by the user and their agent, not by planning or building loops.
+
+ULTIMATE GOAL: ${SCOPE_INSTRUCTION}Consider missing elements and plan accordingly. If an element is missing from specs, search first to confirm it doesn't exist in code, then if needed author the specification at `${SPECS_DIR}/FILENAME.md` with `status: DRAFT` (it will need user review before becoming READY).

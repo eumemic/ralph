@@ -1,7 +1,8 @@
-0a. Study `${SPECS_DIR}/*` with up to 500 parallel **Sonnet** subagents to learn the application specifications.
-0b. Study `${PLAN_FILE}`.
-0c. Study `${AGENTS_FILE}` for operational knowledge (build commands, test commands, patterns).
-0d. For reference, shared utilities are in `${SHARED_UTILS_DIR}/*`.
+0a. Get the list of READY specs by running: `${PLUGIN_ROOT}/scripts/get-ready-specs.sh ${SPECS_DIR}`
+0b. Study the READY specs (from step 0a) with up to 500 parallel **Sonnet** subagents to learn the application specifications.
+0c. Study `${PLAN_FILE}`.
+0d. Study `${AGENTS_FILE}` for operational knowledge (build commands, test commands, patterns).
+0e. For reference, shared utilities are in `${SHARED_UTILS_DIR}/*`.
 
 1. Pick **exactly ONE incomplete item** (a single `- [ ]` checkbox) from `${PLAN_FILE}`. **Announce your choice**: "I am working on: [copy the exact item text]". ONE means ONE - do not combine items, do not do "while I'm here" work, do not batch related items. Complete that single item, commit, and exit. The loop will restart you with fresh context for the next item. Before making changes, search the codebase (don't assume not implemented) using **Sonnet** subagents. You may use up to 500 parallel **Sonnet** subagents for searches/reads and only 1 **Sonnet** subagent for build/tests. Use **Opus** subagents when complex reasoning is needed (debugging, architectural decisions).
 
@@ -26,5 +27,5 @@
 99999999999. For any bugs you notice, resolve them or document them in `${PLAN_FILE}` even if unrelated to current work.
 999999999999. Implement functionality completely. Placeholders and stubs waste efforts and time redoing the same work.
 9999999999999. When `${PLAN_FILE}` becomes large, periodically clean out completed items from the file.
-99999999999999. If you find inconsistencies in `${SPECS_DIR}/*`, use an **Opus** subagent to update the specs.
+99999999999999. If you find inconsistencies in specs, note them in `${PLAN_FILE}` for the user to address. Do NOT modify spec files or change spec statuses - that's the user's job.
 999999999999999. IMPORTANT: Keep `${AGENTS_FILE}` operational only — status updates and progress notes belong in `${PLAN_FILE}`. A bloated AGENTS.md pollutes every future loop's context.

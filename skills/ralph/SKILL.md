@@ -72,6 +72,65 @@ Work is validated through:
 
 If validation fails, the agent fixes and retries. Bad work doesn't escape.
 
+## Spec Status Lifecycle
+
+Every spec has a status in its YAML frontmatter:
+
+```yaml
+---
+status: DRAFT
+---
+```
+
+### The Three Statuses
+
+| Status | Meaning | Who Uses It |
+|--------|---------|-------------|
+| **DRAFT** | Work in progress | Ignored by planners and builders |
+| **READY** | Ready to implement | Planners and builders work from these |
+| **COMPLETE** | Done and verified | Ignored by planners and builders |
+
+### Status Transitions
+
+```
+DRAFT ──► READY ──► COMPLETE
+  ▲         │          │
+  │         │          │
+  └─────────┴──────────┘
+      (design gaps found)
+```
+
+**You (the agent using this skill) manage these transitions, NOT the planning/building loops.**
+
+### When to Transition
+
+**DRAFT → READY:**
+- User has reviewed and approved the spec
+- All design questions are resolved
+- Spec is complete enough for implementation
+
+**READY → COMPLETE:**
+- Implementation is done
+- Tests pass
+- User has verified the feature works as specified
+- User explicitly confirms satisfaction
+
+**READY/COMPLETE → DRAFT:**
+- Major design gap discovered (spec needs significant rework)
+- User wants to save work-in-progress changes
+
+**COMPLETE → READY:**
+- Design gap found in "complete" spec
+- User wants feature extended or modified
+- Bug discovered that indicates spec issue
+
+### Important Rules
+
+1. **You manage statuses** - Planning and building loops do NOT change spec statuses
+2. **Ask before transitioning** - Confirm with user before marking READY or COMPLETE
+3. **Default to DRAFT** - New specs start as DRAFT until user approves
+4. **COMPLETE requires user sign-off** - Never mark COMPLETE without explicit user confirmation
+
 ## Spec Development
 
 This is the human's primary activity. Collaborate with Claude to turn fuzzy ideas into clear specs.
@@ -115,11 +174,20 @@ Once the user confirms they're ready for questions, systematically probe for gap
 Only when the user confirms readiness, write the spec:
 
 - Write directly to `specs/filename.md` (or configured specs_dir)
+- **Start with `status: DRAFT`** in the YAML frontmatter
 - Format is flexible - capture what matters clearly
 - Include: JTBD, acceptance criteria, edge cases, constraints, key design decisions
 - No "open questions" section - those should be resolved in Phase 2
 
 If the user isn't satisfied with the draft, return to Phase 1 for another round.
+
+#### Phase 4: Approve for Implementation
+
+After the user reviews and approves the spec:
+
+- Change `status: DRAFT` to `status: READY`
+- Confirm with user: "The spec is ready. Should I mark it READY for planning and implementation?"
+- Only transition after explicit user approval
 
 ### Topics of Concern
 
@@ -172,6 +240,7 @@ Signs:
 - Does the spec clearly define the expected behavior?
 - Does the code match what the spec says?
 - Is the problem that the spec is wrong, or that the implementation is wrong?
+- **Check the spec status** - is it READY? If it's still DRAFT, the loops never saw it. If it's COMPLETE, the loops skipped it.
 
 ### Step 2: Close Design Gaps (if applicable)
 
@@ -182,13 +251,15 @@ If you identified a design gap, the specs need work before implementation can pr
 2. Focus on the specific gap - you don't need to rewrite the whole spec
 3. Update the existing spec file with corrections or additions
 4. Be explicit about what changed and why
+5. **Update status**: If spec was COMPLETE, change to READY. If major rework needed, change to DRAFT.
 
 **For new features:**
 1. Determine if this is a new topic (new spec file) or an extension of existing topic (update existing spec)
 2. Follow the full three-phase process for new material
 3. Write or update spec files accordingly
+4. New specs start as DRAFT, existing specs being extended go to READY (or DRAFT if significant changes)
 
-After closing design gaps, you now have an implementation gap (the specs describe something the code doesn't do yet).
+After closing design gaps, you now have an implementation gap (the specs describe something the code doesn't do yet). **Ensure the affected specs are in READY status** before proceeding.
 
 ### Step 3: Close Implementation Gaps
 
@@ -222,6 +293,18 @@ Process:
 2. Review the generated/updated plan
 3. Run `ralph build` to implement the planned tasks
 
+### Step 4: Verify and Mark Complete
+
+After implementation (whether targeted fix or ralph build):
+
+1. Review the results with the user
+2. Verify the feature works as specified
+3. Ask user: "Are you satisfied with how [feature] works?"
+4. If yes, mark the relevant READY specs as COMPLETE
+5. If no, identify the gap (design or implementation) and repeat the process
+
+**Only mark specs COMPLETE when the user explicitly confirms satisfaction.**
+
 ### Quick Reference: Gap Diagnosis
 
 | Symptom | Likely Gap Type | Action |
@@ -231,6 +314,16 @@ Process:
 | "I want to add a new feature" | Design | New/updated spec, then implement |
 | "It works as specced but that's wrong" | Design | Fix spec, then re-implement |
 | "Ralph built the wrong thing" | Check both | Read spec - if spec is right, implementation gap; if spec is wrong/vague, design gap |
+| "Nothing happened when I ran plan/build" | Status issue | Check if specs are READY (not DRAFT or COMPLETE) |
+
+### Common Status Problems
+
+| Problem | Cause | Fix |
+|---------|-------|-----|
+| Loops don't see my spec | Status is DRAFT | Change to READY after user approves |
+| Loops skip a spec I just modified | Status is COMPLETE | Change back to READY |
+| Spec was modified but not re-implemented | Forgot to change COMPLETE → READY | Update status, re-run loops |
+| New spec never got implemented | Left as DRAFT | Get user approval, change to READY |
 
 ## Operations
 

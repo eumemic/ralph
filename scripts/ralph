@@ -223,6 +223,7 @@ run_loop() {
         echo ""
 
         # Prepare environment for envsubst
+        export PLUGIN_ROOT
         export SPECS_DIR
         export PLAN_FILE
         export AGENTS_FILE
